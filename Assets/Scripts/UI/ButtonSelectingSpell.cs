@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.EventSystems;
+using UnityEngine.UI;
 
 [RequireComponent(typeof(Spell))]
 public class ButtonSelectingSpell : EventTrigger
