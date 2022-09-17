@@ -1,4 +1,3 @@
-using DG.Tweening;
 using UnityEngine;
 
 [RequireComponent(typeof(Rigidbody))]
@@ -7,11 +6,11 @@ public class EnemyMovement : MonoBehaviour
 {
     [SerializeField] private PlayerMovement _playerMovement;
     [SerializeField] private float _duration;
-    [SerializeField] private float _force;
+    [SerializeField] private float _repulsiveForce;
+    [SerializeField] private float _attractionForce;
 
     private Rigidbody _rigidbody;
     private Enemy _enemy;
-    private Tween _currentTween;
 
     private void Start()
     {
@@ -24,28 +23,21 @@ public class EnemyMovement : MonoBehaviour
 
         _enemy.Damaged += OnDamaged;
         _enemy.Healed += OnHealed;
-        _playerMovement.Moving += OnMoving;
     }
 
     private void OnDisable()
     {
         _enemy.Damaged -= OnDamaged;
         _enemy.Healed -= OnHealed;
-        _playerMovement.Moving -= OnMoving;
     }
 
     private void OnDamaged(Transform targetPosition)
     {
-        _rigidbody.AddRelativeForce(transform.position + targetPosition.position * _force * Time.deltaTime, ForceMode.VelocityChange);
+        _rigidbody.AddRelativeForce((targetPosition.position - transform.position) * _repulsiveForce * Time.deltaTime, ForceMode.VelocityChange);
     }
 
     private void OnHealed(Transform targetPosition)
     {
-        _currentTween = transform.DOMove(targetPosition.transform.position, _duration);
-    }
-    
-    private void OnMoving()
-    {
-        _currentTween.Pause();
+        _rigidbody.AddRelativeForce((targetPosition.position - transform.position) * _attractionForce * Time.deltaTime, ForceMode.VelocityChange);
     }
 }
